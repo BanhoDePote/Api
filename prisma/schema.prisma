@@ -1,0 +1,71 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int        @id @default(autoincrement())
+  name     String     @unique @db.VarChar(255)
+  email     String     @unique @db.VarChar(255)
+  password  String     @db.VarChar(255)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  Session   Session[]
+  Waiter    Waiter[]
+}
+
+model Session {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  User      User     @relation(fields: [userId], references: [id])
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Waiter {
+  id      Int     @id @default(autoincrement())
+  userId Int      @unique
+  user    User    @relation(fields: [userId], references: [id])
+  
+  Orders Order[]
+}
+
+model Dish {
+  id       Int      @id @default(autoincrement())
+  name     String
+  price    Float
+  orders   OrderDish[]
+
+  @@map("dishes")
+}
+
+model Order {
+  id       Int      @id @default(autoincrement())
+  waiter   Waiter   @relation(fields: [waiterId], references: [id])
+  waiterId Int
+  dishes   OrderDish[]
+  tableId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  open Boolean @default(true)
+  @@map("orders")
+}
+
+model OrderDish {
+  id       Int     @id @default(autoincrement())
+  orderId  Int
+  order    Order   @relation(fields: [orderId], references: [id])
+  dishId   Int
+  dish     Dish    @relation(fields: [dishId], references: [id])
+  quantity Int
+
+  @@map("orders_dishes")
+}
