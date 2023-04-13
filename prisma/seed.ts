@@ -1,9 +1,15 @@
 import bcrypt from 'bcrypt';
 import { CategoryDish, PrismaClient } from '@prisma/client';
+import { Sql } from '@prisma/client/runtime';
 const prisma = new PrismaClient();
 
 async function main() {
   let user = await prisma.user.findFirst();
+
+  await prisma.jobTitle.deleteMany();
+  await prisma.dish.deleteMany();
+  await prisma.employee.deleteMany();
+  
 
   const hashedPassword = await bcrypt.hash('32050832', 12);
 
@@ -16,6 +22,25 @@ async function main() {
       },
     });
   }
+
+  const employees = [
+    {
+      name: 'Caixa'
+    },
+    {
+      name: 'Garçom'
+    },
+    {
+      name: 'Cozinha'
+    },
+  ];
+
+  for (const employee of employees) {
+    await prisma.jobTitle.create({
+      data: employee,
+    });
+  }
+
 
 
 
@@ -37,6 +62,7 @@ async function main() {
     },
   ];
 
+
   for (const dish of dishes) {
     await prisma.dish.create({
       data: dish,
@@ -44,6 +70,7 @@ async function main() {
   }
 
 }
+
 
 main()
   .catch((e) => {

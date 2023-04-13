@@ -1,15 +1,15 @@
 import { prisma } from '@/config';
 import orderRepository from '@/repositories/order-repository';
-import { findWaiter } from '@/repositories/waiter-repository';
+import { verifyWaiter } from '@/repositories/waiter-repository';
 import { notFoundWaiter } from './errors';
 
 async function createOrder(orderData: OrderData) {
     
-    const waiter = await findWaiter(orderData.userId);
+    const waiter = await verifyWaiter(orderData.userId);
 
     if(!waiter) throw notFoundWaiter();
 
-    orderData.userId = waiter.id;
+    orderData.userId = waiter.user.id;
     return await orderRepository.createOrder(orderData);
 
 }

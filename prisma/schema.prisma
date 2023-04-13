@@ -18,8 +18,7 @@ model User {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
   Session   Session[]
-  Waiter    Waiter[]
-  Kitchen   Kitchen[]
+  Employee    Employee[]
 }
 
 model Session {
@@ -31,18 +30,22 @@ model Session {
   updatedAt DateTime @updatedAt
 }
 
-model Waiter {
+model Employee{
   id      Int     @id @default(autoincrement())
   userId Int      @unique
   user    User    @relation(fields: [userId], references: [id])
-  
+  jobId Int      @unique
+  job    JobTitle    @relation(fields: [jobId], references: [id])
+
   Orders Order[]
 }
 
-model Kitchen {
+
+model JobTitle {
   id      Int     @id @default(autoincrement())
-  userId Int      @unique
-  user    User    @relation(fields: [userId], references: [id])
+  name String
+
+  Employee Employee[]
   
 }
 
@@ -58,7 +61,7 @@ model Dish {
 
 model Order {
   id       Int      @id @default(autoincrement())
-  waiter   Waiter   @relation(fields: [waiterId], references: [id])
+  waiter   Employee   @relation(fields: [waiterId], references: [id])
   waiterId Int
   dishes   OrderDish[]
   tableId Int
