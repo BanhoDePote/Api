@@ -19,6 +19,7 @@ model User {
   updatedAt DateTime   @updatedAt
   Session   Session[]
   Waiter    Waiter[]
+  Kitchen   Kitchen[]
 }
 
 model Session {
@@ -38,11 +39,19 @@ model Waiter {
   Orders Order[]
 }
 
+model Kitchen {
+  id      Int     @id @default(autoincrement())
+  userId Int      @unique
+  user    User    @relation(fields: [userId], references: [id])
+  
+}
+
 model Dish {
-  id       Int      @id @default(autoincrement())
-  name     String
-  price    Float
-  orders   OrderDish[]
+  id         Int      @id @default(autoincrement())
+  name       String
+  price      Float
+  orders     OrderDish[]
+  category   CategoryDish 
 
   @@map("dishes")
 }
@@ -56,6 +65,8 @@ model Order {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   open Boolean @default(true)
+
+  
   @@map("orders")
 }
 
@@ -66,6 +77,21 @@ model OrderDish {
   dishId   Int
   dish     Dish    @relation(fields: [dishId], references: [id])
   quantity Int
+  status StatusDish @default(Fila)
 
   @@map("orders_dishes")
+}
+
+enum StatusDish {
+  Preparando
+  Pronto
+  Fila
+}
+
+enum CategoryDish {
+  Refeicao
+  Petisco
+  Bebidas
+  Cachacas
+  Torre
 }
