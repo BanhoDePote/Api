@@ -9,10 +9,16 @@ loadEnv();
 
 import { handleApplicationErrors } from '@/middlewares';
 import { usersRouter, authenticationRouter, waiterRouter, kitchenRouter } from '@/routers';
+import { createServer } from 'http';
+import { Server } from 'socket.io';
+import { Response, ResponseWithIo } from './config/configSocket';
 
 const app = express();
+
+
+
 app
-  .use(cors())
+  .use(cors({ origin: '*' }))
   .use(express.json())
   .get('/health', (_req, res) => res.send('OK!'))
   .use('/users', usersRouter)
@@ -21,13 +27,36 @@ app
   .use('/kitchen', kitchenRouter)
   .use(handleApplicationErrors);
 
+
 export function init(): Promise<Express> {
   connectDb();
   return Promise.resolve(app);
 }
 
+
 export async function close(): Promise<void> {
   await disconnectDB();
 }
 
-export default app;
+const server = createServer(app);
+
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+});
+
+app.use((req, res:Response, next) => {
+  res.io = io;
+  next();
+});
+
+io.on("connection", socket =>{
+  console.log(socket.id)
+})
+
+
+export  {server, io};
+
