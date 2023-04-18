@@ -18,6 +18,14 @@ export async function verifyWaiter(userId:number){
   })
 }
 
+export  const findAllOrderByWaiter = async(userId:number) => {
+    return prisma.order.findMany({
+      where:{
+        waiterId:userId
+      }
+    })
+}
+
 export async function findAllWaiter(){
   return prisma.employee.findMany({
     where:{

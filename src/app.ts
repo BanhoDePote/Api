@@ -11,7 +11,7 @@ import { handleApplicationErrors } from '@/middlewares';
 import { usersRouter, authenticationRouter, waiterRouter, kitchenRouter } from '@/routers';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
-import { Response, ResponseWithIo } from './config/configSocket';
+import { Response } from './config/configSocket';
 
 const app = express();
 
@@ -54,7 +54,7 @@ app.use((req, res:Response, next) => {
 });
 
 io.on("connection", socket =>{
-  console.log(socket.id)
+  console.log(` homem conectado ai ${socket.id}`)
 })
 
 

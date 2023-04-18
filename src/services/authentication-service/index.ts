@@ -6,7 +6,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { invalidCredentialsError } from './errors';
 
-async function signIn(params: SignInParams): Promise<SignInResult> {
+async function signIn(params: SignInParams){
   const { email, password } = params;
 
   const user = await getUserOrFail(email);
@@ -23,8 +23,10 @@ async function signIn(params: SignInParams): Promise<SignInResult> {
 }
 
 async function getUserOrFail(email: string): Promise<GetUserOrFailResult> {
-  const user = await userRepository.findByEmail(email, { id: true, email: true, password: true , Employee:{select:{job:{select:{name:true}}}}});
+  const user = await userRepository.findByEmail(email);
+
   if (!user) throw invalidCredentialsError();
+
 
   return user;
 }
@@ -46,17 +48,13 @@ async function validatePasswordOrFail(password: string, userPassword: string) {
 
 export type SignInParams = Pick<User, 'email' | 'password'>;
 
-type SignInResult = {
-  user: Pick<User, 'id' | 'email'>;
-  token: string;
-};
 
 
 type GetUserOrFailResult = {
   id:number,
   email:string,
   password:string,
-  Employee?:Object,
+  employee?:string,
 };
 
 const authenticationService = {
