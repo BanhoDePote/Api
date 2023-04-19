@@ -1,4 +1,5 @@
 import { prisma } from '@/config';
+import { notFoundError } from '@/errors';
 import { Prisma } from '@prisma/client';
 
 async function findByEmail(email: string) {
@@ -9,6 +10,7 @@ async function findByEmail(email: string) {
       name:true,
       email: true,
       password:true,
+      img:true,
       employee: {
         select: {
           job: {
@@ -20,12 +22,17 @@ async function findByEmail(email: string) {
       }
     }
   });
+
+  if(!user){
+    throw notFoundError();
+  }
   
   const transformedUser = {
     id: user.id,
     name:user.name,
     email: user.email,
     password:user.password,
+    img:user.img,
     employee: user.employee.map((e) => e.job.name).join(", ")
   };
 
