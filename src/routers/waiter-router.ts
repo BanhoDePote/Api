@@ -1,15 +1,16 @@
 import { Router } from 'express';
 
-import { createUserSchema } from '@/schemas';
+import { createOrderSchema, createUserSchema } from '@/schemas';
 import { authenticateToken, validateBody } from '@/middlewares';
-import { createOrder, findAllOrdersByWaiter ,} from '@/controllers';
+import { createOrder, findAllDishes, findAllOrdersByWaiter ,} from '@/controllers';
 
 const waiterRouter = Router();
 
 waiterRouter.all('/*', authenticateToken);
 
 // waiterRouter.post('/', validateBody(createUserSchema), usersPost);
-waiterRouter.post('/create-order/:tableId', createOrder);
+waiterRouter.post('/create-order/:tableId',validateBody(createOrderSchema), createOrder);
 waiterRouter.get('/', findAllOrdersByWaiter);
+waiterRouter.get('/dish', findAllDishes);
 
 export { waiterRouter };

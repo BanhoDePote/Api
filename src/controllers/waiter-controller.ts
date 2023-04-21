@@ -1,5 +1,5 @@
 import { io } from '@/app';
-import { findAllOrderByWaiter } from '@/repositories/waiter-repository';
+import { findAllDishTypes, findAllOrderByWaiter } from '@/repositories/waiter-repository';
 import { Dishes } from '@/services';
 import waiterService from '@/services/waiter-service';
 import { Request, Response } from 'express';
@@ -29,5 +29,13 @@ export async function findAllOrdersByWaiter(req: Request, res: Response) {
   io.emit("orders", orders)
   
   res.status(httpStatus.OK).send(orders);
+    
+}
+
+export async function findAllDishes(req: Request, res: Response) {
+
+  const dishes = await findAllDishTypes();
+  
+  res.status(httpStatus.OK).send(dishes);
     
 }

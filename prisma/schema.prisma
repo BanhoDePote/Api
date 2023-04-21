@@ -54,7 +54,8 @@ model Dish {
   name       String
   price      Float
   orders     OrderDish[]
-  category   CategoryDish 
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId Int
 
   @@map("dishes")
 }
@@ -91,10 +92,8 @@ enum StatusDish {
   Fila
 }
 
-enum CategoryDish {
-  Refeicao
-  Petisco
-  Bebidas
-  Cachacas
-  Torre
+model Category {
+  id      Int      @id @default(autoincrement())
+  name    String   @unique
+  dishes  Dish[]
 }

@@ -41,3 +41,11 @@ export async function findAllWaiter(){
     }
   })
 }
+
+export async function findAllDishTypes() {
+  return prisma.category.findMany({
+    include:{
+      dishes:true
+    }
+  })
+}
