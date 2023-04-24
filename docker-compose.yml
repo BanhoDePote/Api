@@ -36,3 +36,15 @@ services:
     command: postgres -p ${POSTGRES_PORT}
     ports:
       - "5436:5436"
+
+  nginx:
+    image: nginx
+    container_name: potbath_nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - frontend
+

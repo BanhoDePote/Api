@@ -82,6 +82,18 @@ async function main() {
       data: dish,
     });
   }
+
+  const jobTitle = await prisma.jobTitle.findFirst({ where: { name: 'Garçom' }})
+
+  if(jobTitle && user){
+     await prisma.employee.create({
+      data: {
+        userId: user.id,
+        jobId:jobTitle.id
+      }
+    })
+  }
+  
 }
 deleteAllData();
 main()
