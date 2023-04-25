@@ -1,7 +1,6 @@
 import { prisma } from '@/config';
-import { Prisma } from '@prisma/client';
 
-async function create(data: Prisma.SessionUncheckedCreateInput) {
+async function create(data: any) {
   await prisma.session.deleteMany({
     where: {
       userId: data.userId

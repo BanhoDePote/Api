@@ -1,6 +1,5 @@
 import { prisma } from '@/config';
 import { notFoundError } from '@/errors';
-import { Prisma } from '@prisma/client';
 
 async function findByEmail(email: string) {
   const user = await prisma.user.findUnique({
@@ -39,7 +38,7 @@ async function findByEmail(email: string) {
   return transformedUser
 }
 
-async function create(data: Prisma.UserUncheckedCreateInput) {
+async function create(data: any) {
   return prisma.user.create({
     data,
   });
