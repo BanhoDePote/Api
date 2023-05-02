@@ -83,6 +83,18 @@ async function main() {
     });
   }
 
+  for (const dish of bebidas) {
+    await prisma.dish.create({
+      data: dish,
+    });
+  }
+
+  for (const dish of aguardentes) {
+    await prisma.dish.create({
+      data: dish,
+    });
+  }
+
   const jobTitle = await prisma.jobTitle.findFirst({ where: { name: 'Garçom' }})
 
   if(jobTitle && user){
@@ -364,3 +376,164 @@ const torres = [
     categoryId: 3,
   },
 ];
+
+const bebidas = [
+  {
+    name: 'Agua Mineral c/ gás',
+    price: 3.0,
+    categoryId: 4,
+  },
+  {
+    name: 'Agua Mineral s/ gás',
+    price: 2.5,
+    categoryId: 4,
+  },
+  {
+    name: 'Coco Verde Gelado ou Natural',
+    price: 4,
+    categoryId: 4,
+  },
+  {
+    name: 'Água de Coco',
+    price: 13.9,
+    categoryId: 4,
+  },
+  {
+    name: 'Refrigerante 1 Litro (Coca ou Guaraná)',
+    price: 9,
+    categoryId: 4,
+  },
+  {
+    name: 'Copo suco',
+    price: 6,
+    categoryId: 4,
+  },
+  {
+    name: 'Energético',
+    price: 9,
+    categoryId: 4,
+  },
+  {
+    name: 'Jarra de suco',
+    price: 16.90,
+    categoryId: 4,
+  },
+  {
+    name: 'Caipirinha',
+    price: 8,
+    categoryId: 4,
+  },
+  {
+    name: 'Caipirosca',
+    price: 10,
+    categoryId: 4,
+  },
+  {
+    name: 'Caipirosca c/ leite condesado',
+    price: 12,
+    categoryId: 4,
+  },
+  {
+    name: 'Cerveja Litrão',
+    price: 12,
+    categoryId: 4,
+  },
+  {
+    name: 'Cerveja sem álcool',
+    price: 6,
+    categoryId: 4,
+  },
+  {
+    name: 'Cerveja Heineken',
+    price: 12,
+    categoryId: 4,
+  },
+  {
+    name: 'Conhaque Dreher',
+    price: 5,
+    categoryId: 4,
+  },
+  {
+    name: 'Campari',
+    price: 5,
+    categoryId: 4,
+  },
+  {
+    name: 'Martini Bianco e Rose',
+    price: 5,
+    categoryId: 4,
+  },
+  {
+    name: 'Ron Montilla',
+    price: 5,
+    categoryId: 4,
+  },
+  {
+    name: 'Vodka Smirnof',
+    price: 5,
+    categoryId: 4,
+  },
+  {
+    name: 'Vodka Slova',
+    price: 4,
+    categoryId: 4,
+  },
+  {
+    name: 'Vinho Quinta do Morgatto',
+    price: 24,
+    categoryId: 4,
+  },
+  {
+    name: 'Whisky Johnnie Walker Red',
+    price: 8,
+    categoryId: 4,
+  },
+  {
+    name: 'Whisky Old Eight',
+    price: 5,
+    categoryId: 4,
+  },
+  {
+    name: 'Whisky Black White',
+    price: 8,
+    categoryId: 4,
+  },
+  {
+    name: 'Whisky Teacher',
+    price: 7,
+    categoryId: 4,
+  },
+  {
+    name: 'Whisky Old Par',
+    price: 12,
+    categoryId: 4,
+  },
+];
+
+const aguardentes = [
+  {
+    name: 'Aguardente de cana 51',
+    price: 3.0,
+    categoryId: 5,
+  },
+  {
+    name: 'Aguardente de cana Pitú',
+    price: 3,
+    categoryId: 5,
+  },
+  {
+    name: 'Aguardente de cana Caranguejo',
+    price: 3.0,
+    categoryId: 5,
+  },
+  {
+    name: 'Burrinho de cana 51 ou Pitú',
+    price: 12,
+    categoryId: 5,
+  },
+  {
+    name: 'Burrinho de cachaça Ypioca ou Caranguejo Ouro',
+    price: 15,
+    categoryId: 5,
+  },
+]

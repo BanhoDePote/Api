@@ -16,11 +16,23 @@ import { prisma } from "@/config";
 }
 
 async function findAllOrderByWaiter(userId:number){
-    return prisma.order.findMany({
+    const pedidos = await prisma.order.findMany({
       where:{
         waiterId:userId
       }
     })
+
+    const pedidosPorMesa:any = {};
+
+  for (const pedido of pedidos) {
+    const { tableId } = pedido;
+    if (!pedidosPorMesa[tableId]) {
+      pedidosPorMesa[tableId] = [];
+    }
+    pedidosPorMesa[tableId].push(pedido);
+  }
+
+  return pedidosPorMesa
 }
 
 async function findAllWaiter(){

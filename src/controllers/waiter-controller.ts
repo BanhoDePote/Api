@@ -14,7 +14,7 @@ export async function createOrder(req: Request, res: Response) {
 
   const order = await waiterService.createOrder({userId, tableId, dishes});
   const orders = await waiterRepository.findAllOrderByWaiter(userId);
-  io.emit("orders", orders)
+  io.emit("orders", order)
 
   res.status(httpStatus.OK).send(order)
     
