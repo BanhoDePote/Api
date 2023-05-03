@@ -1,28 +1,25 @@
-import { prisma } from "@/config";
+import { prisma } from '@/config';
 
-
- async function verifyWaiter(userId:number){
+async function verifyWaiter(userId: number) {
   return prisma.employee.findFirst({
-    where:{
-      job:{name:"Garçom"},
-      AND:{userId}
+    where: {
+      job: { name: 'Garçom' },
+      AND: { userId },
     },
-    select:{
-          id:true,
-        
-      }
-    }
-  )
+    select: {
+      id: true,
+    },
+  });
 }
 
-async function findAllOrderByWaiter(userId:number){
-    const pedidos = await prisma.order.findMany({
-      where:{
-        waiterId:userId
-      }
-    })
+async function findAllOrderByWaiter(userId: number) {
+  const pedidos = await prisma.order.findMany({
+    where: {
+      waiterId: userId,
+    },
+  });
 
-    const pedidosPorMesa:any = {};
+  const pedidosPorMesa: any = {};
 
   for (const pedido of pedidos) {
     const { tableId } = pedido;
@@ -32,33 +29,71 @@ async function findAllOrderByWaiter(userId:number){
     pedidosPorMesa[tableId].push(pedido);
   }
 
-  return pedidosPorMesa
+  return pedidosPorMesa;
 }
 
-async function findAllWaiter(){
+async function findAllWaiter() {
   return prisma.employee.findMany({
-    where:{
-      job:{name:"Garçom"}
+    where: {
+      job: { name: 'Garçom' },
     },
-    select:{
-      user:{
-        select:{
-          id:true,
-          name:true,
-        }
-      }
-    }
-  })
+    select: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+  });
 }
 
 async function findAllDishTypes() {
   return prisma.category.findMany({
-    include:{
-      dishes:true
-    }
-  })
+    include: {
+      dishes: true,
+    },
+  });
+}
+
+async function findAllOrderByTableId(userId: number, tableId: number) {
+  const orders = await prisma.order.findMany({
+    where: {
+      waiterId: userId,
+      tableId: tableId,
+    },
+    select: {
+      dishes: {
+        select: {
+          id: true,
+          orderId: true,
+          dishId: true,
+          quantity: true,
+          status: true,
+          dish: {
+            select: {
+              name: true,
+              price:true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  const orderDish = orders.map((order) => {
+    return order.dishes.map((dish) => {
+      return { ...dish, name: dish.dish.name , price:dish.dish.price};
+    });
+  });
+
+  return orderDish;
 }
 
 export const waiterRepository = {
-  findAllDishTypes,findAllWaiter,findAllOrderByWaiter,verifyWaiter
-}
+  findAllDishTypes,
+  findAllWaiter,
+  findAllOrderByWaiter,
+  verifyWaiter,
+  findAllOrderByTableId,
+};

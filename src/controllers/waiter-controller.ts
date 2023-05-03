@@ -32,6 +32,17 @@ export async function findAllOrdersByWaiter(req: Request, res: Response) {
     
 }
 
+
+export async function findAllOrdersByTable(req: Request, res: Response) {
+  const { userId } = res.locals;
+  const {tableId } = req.params;
+
+  const orders = await waiterService.getOrderByTableId(userId, tableId);
+  
+  res.status(httpStatus.OK).send(orders);
+    
+}
+
 export async function findAllDishes(req: Request, res: Response) {
 
   const dishes = await waiterRepository.findAllDishTypes();

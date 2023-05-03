@@ -25,6 +25,20 @@ async function getOrderByWaiterId(userId:number) {
 
 }
 
+
+async function getOrderByTableId(userId:number, tableId:string) {
+    
+    const waiter = await waiterRepository.verifyWaiter(userId);
+
+    if(!waiter) throw notFoundWaiter();
+
+    const orders = await waiterRepository.findAllOrderByTableId(waiter.id, Number(tableId));
+
+    return orders
+
+}
+
+
 export interface Dishes {
     dishId: number,
     quantity: number,
@@ -38,7 +52,7 @@ export type OrderData = {
 };
   
 const waiterService = {
-    createOrder,getOrderByWaiterId
+    createOrder,getOrderByWaiterId,getOrderByTableId
 };
 
 export default waiterService;
