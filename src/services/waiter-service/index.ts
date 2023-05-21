@@ -4,10 +4,21 @@ import { waiterRepository } from '@/repositories/waiter-repository';
 import { notFoundWaiter } from './errors';
 
 async function createOrder(orderData: OrderData) {
+
+    const { userId, tableId } = orderData;
     
-    const waiter = await waiterRepository.verifyWaiter(orderData.userId);
+    const waiter = await waiterRepository.verifyWaiter(userId);
 
     if(!waiter) throw notFoundWaiter();
+
+    const orderTable = await waiterRepository.findAllOrderByTableId(waiter.id, tableId)
+
+
+    if(orderTable){
+        const orderId = orderTable.dishes[0].orderId;
+       return  await waiterRepository.updateOrder(orderId, orderData.dishes)
+    }
+
     orderData.userId = waiter.id;
     return await orderRepository.createOrder(orderData);
 
@@ -20,8 +31,9 @@ async function getOrderByWaiterId(userId:number) {
     if(!waiter) throw notFoundWaiter();
 
     const orders = await waiterRepository.findAllOrderByWaiter(waiter.id);
+    const dishes = await waiterRepository.findAllDishTypes();
 
-    return orders
+    return {orders, dishes}
 
 }
 

@@ -1,4 +1,6 @@
 import { prisma } from '@/config';
+import { Dishes } from '@/services';
+import { Dish } from '@prisma/client';
 
 async function verifyWaiter(userId: number) {
   return prisma.employee.findFirst({
@@ -17,19 +19,27 @@ async function findAllOrderByWaiter(userId: number) {
     where: {
       waiterId: userId,
     },
+    select: {
+      id:true,
+      tableId:true,
+      dishes: {
+        select: {
+          orderId: true,
+          dishId: true,
+          quantity: true,
+          status: true,
+          dish: {
+            select: {
+              name: true,
+              price:true,
+            },
+          },
+        },
+      },
+    },
   });
 
-  const pedidosPorMesa: any = {};
-
-  for (const pedido of pedidos) {
-    const { tableId } = pedido;
-    if (!pedidosPorMesa[tableId]) {
-      pedidosPorMesa[tableId] = [];
-    }
-    pedidosPorMesa[tableId].push(pedido);
-  }
-
-  return pedidosPorMesa;
+  return pedidos;
 }
 
 async function findAllWaiter() {
@@ -57,15 +67,17 @@ async function findAllDishTypes() {
 }
 
 async function findAllOrderByTableId(userId: number, tableId: number) {
-  const orders = await prisma.order.findMany({
+  const order = await prisma.order.findFirst({
     where: {
       waiterId: userId,
       tableId: tableId,
+      open:true,
     },
+  
     select: {
+      id:true,
       dishes: {
         select: {
-          id: true,
           orderId: true,
           dishId: true,
           quantity: true,
@@ -81,14 +93,25 @@ async function findAllOrderByTableId(userId: number, tableId: number) {
     },
   });
 
-  const orderDish = orders.map((order) => {
-    return order.dishes.map((dish) => {
-      return { ...dish, name: dish.dish.name , price:dish.dish.price};
-    });
-  });
 
-  return orderDish;
+
+
+
+  return order;
 }
+
+
+const updateOrder = (orderId: number, dishes: Dishes[]) => {
+  const orderDishes = dishes.map(dish => ({
+    ...dish,
+    orderId,
+    quantity: dish.quantity,
+  }));
+
+  return prisma.orderDish.createMany({
+    data: orderDishes
+  });
+};
 
 export const waiterRepository = {
   findAllDishTypes,
@@ -96,4 +119,5 @@ export const waiterRepository = {
   findAllOrderByWaiter,
   verifyWaiter,
   findAllOrderByTableId,
+  updateOrder,
 };
